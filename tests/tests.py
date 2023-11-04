@@ -291,6 +291,38 @@ class PhoneNumberFieldTestCase(TestCase):
         self.assertEqual(number1, "")
         self.assertIsNone(number2)
 
+    def test_value_to_string(self):
+        m = models.MandatoryPhoneNumber.objects.create(phone_number=self.test_number_1)
+        i = models.MandatoryPhoneNumber.objects.create(
+            phone_number=self.invalid_numbers[0]
+        )
+        o = models.OptionalPhoneNumber.objects.create(phone_number="")
+        n = models.NullablePhoneNumber.objects.create(phone_number=None)
+        self.assertEqual(
+            self.test_number_1,
+            models.MandatoryPhoneNumber._meta.get_field("phone_number").value_to_string(
+                m
+            ),
+        )
+        self.assertEqual(
+            self.invalid_numbers[0],
+            models.MandatoryPhoneNumber._meta.get_field("phone_number").value_to_string(
+                i
+            ),
+        )
+        self.assertEqual(
+            "",
+            models.OptionalPhoneNumber._meta.get_field("phone_number").value_to_string(
+                o
+            ),
+        )
+        self.assertEqual(
+            None,
+            models.NullablePhoneNumber._meta.get_field("phone_number").value_to_string(
+                n
+            ),
+        )
+
 
 class PhoneNumberFieldAppTest(TestCase):
     @classmethod

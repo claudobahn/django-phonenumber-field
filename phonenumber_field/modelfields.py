@@ -105,6 +105,10 @@ class PhoneNumberField(models.CharField):
     def from_db_value(self, value, expression, connection):
         return to_python(value)
 
+    def value_to_string(self, obj):
+        value = self.value_from_object(obj)
+        return self.get_prep_value(value)
+
     def contribute_to_class(self, cls, name, *args, **kwargs):
         super().contribute_to_class(cls, name, *args, **kwargs)
         setattr(cls, self.name, self.descriptor_class(self))
