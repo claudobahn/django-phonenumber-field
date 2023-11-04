@@ -103,7 +103,12 @@ class PhoneNumberField(models.CharField):
         return super().get_prep_value(value)
 
     def from_db_value(self, value, expression, connection):
-        return to_python(value)
+        if self.primary_key or self.remote_field is not None:
+            # if we're dealing w/ a primary or foreign key field,
+            # don't return a python object, since it breaks a lot of things
+            return value
+        else:
+            return to_python(value)
 
     def value_to_string(self, obj):
         value = self.value_from_object(obj)
